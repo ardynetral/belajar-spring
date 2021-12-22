@@ -3,6 +3,8 @@ package com.belajar.movies.belajarspring.datasource.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,9 +42,11 @@ public class OrderItems {
     private String snapshots;
 
     @Column(name = "`created_at`")
+    @CreationTimestamp
     private Date createdAt;
 
     @Column(name = "`updated_at`")
+    @UpdateTimestamp
     private Date updatedAt;
 
     @Column(name = "`deleted_at`")

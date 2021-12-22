@@ -1,8 +1,11 @@
 package com.belajar.movies.belajarspring.datasource.model;
 
 import com.belajar.movies.belajarspring.datasource.AppUserRole;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -12,8 +15,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "`users`", schema = "`movies`")
-@Getter
-@Setter
+@Data
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +40,11 @@ public class Users {
     private Boolean isAdmin;
 
     @Column(name = "`created_at`")
+    @CreationTimestamp
     private Date createdAt;
 
     @Column(name = "`updated_at`")
+    @UpdateTimestamp
     private Date updatedAt;
 
     @Column(name = "`deleted_at`")
@@ -48,5 +52,8 @@ public class Users {
 
     @Transient
     private List<AppUserRole> appUserRoles;
+
+    @Transient
+    private String token;
 
 }

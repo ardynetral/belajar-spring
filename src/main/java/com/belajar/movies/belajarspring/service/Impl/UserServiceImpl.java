@@ -1,24 +1,25 @@
 package com.belajar.movies.belajarspring.service.Impl;
 
-import com.belajar.movies.belajarspring.controller.config.CustomException;
 import com.belajar.movies.belajarspring.datasource.AppUserRole;
 import com.belajar.movies.belajarspring.datasource.model.Users;
 import com.belajar.movies.belajarspring.datasource.repository.UsersRepository;
+import com.belajar.movies.belajarspring.views.request.LoginDto;
+import com.belajar.movies.belajarspring.views.request.RegisterDto;
 import com.belajar.movies.belajarspring.security.JwtTokenProvider;
 import com.belajar.movies.belajarspring.service.UserService;
-import lombok.RequiredArgsConstructor;
+import com.belajar.movies.belajarspring.util.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 @Service("UserService")
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -32,48 +33,32 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+    private UploadFile uploadFile = new UploadFile();
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Override
-    public Map signup(Users users) {
-        Map response = new HashMap();
-        if (!userRepository.existsByUsername(users.getUsername())) {
-            users.setPassword(passwordEncoder.encode(users.getPassword()));
-            users.setEmail(users.getEmail());
-            users.setUsername(users.getUsername());
-            users.setCreatedAt(new Date());
-            userRepository.save(users);
-            response.put("name", users.getUsername());
-            response.put("email", users.getEmail());
-            response.put("token", jwtTokenProvider.createToken(users.getUsername(), users.getAppUserRoles()));
-        } else {
-            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-        return response;
+    public Users signup(RegisterDto registerDto) throws IOException {
+        Path file = uploadFile.upload(registerDto.getAvatar(), uploadPath);
+        var neUser = new Users();
+        neUser.setUsername(registerDto.getName());
+        neUser.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        neUser.setEmail(registerDto.getEmail());
+        neUser.setCreatedAt(new Date());
+        neUser.setAvatar(file.toString());
+        neUser.setIsAdmin(true);
+        neUser.setToken(jwtTokenProvider.createToken(registerDto.getName(), new ArrayList<AppUserRole>(Arrays.asList(AppUserRole.ROLE_ADMIN))));
+
+        return userRepository.save(neUser);
     }
 
     @Override
-    public Map login(String username, String password){
-        Map response = new HashMap();
-        try {
+    public Users login(LoginDto loginDto){
 
-            Users user = userRepository.findByUsername(username);
-            Map rest = new HashMap();
-            rest.put("name", user.getUsername());
-            rest.put("email", user.getEmail());
-            rest.put("avatar", "");
-            if (user.getIsAdmin()){
-                rest.put("token", jwtTokenProvider.createToken(username, new ArrayList<AppUserRole>(Arrays.asList(AppUserRole.ROLE_ADMIN))));
-            }
-            response.put("success", true);
-            response.put("data", rest);
-            response.put("message", "Success Login");
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-            throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        return response;
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+        Users user = userRepository.findByUsername(loginDto.getUsername());
+        user.setToken(jwtTokenProvider.createToken(loginDto.getUsername(), new ArrayList<AppUserRole>(Arrays.asList(AppUserRole.ROLE_ADMIN))));
+        return user;
     }
 }

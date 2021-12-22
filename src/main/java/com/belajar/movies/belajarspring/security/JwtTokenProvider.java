@@ -76,9 +76,11 @@ public class JwtTokenProvider {
 
   public boolean validateToken(String token) throws ValidationException {
     try {
+//      System.out.println("token validasi "+token);
       Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
       return true;
     } catch (JwtException | IllegalArgumentException e) {
+//      e.printStackTrace();
       Map map = new HashMap();
       map.put("error", "Expired or invalid JWT token");
       throw new ValidationException(ErrorCode.ERROR.INTERNAL_SERVER_ERROR.name(), map);

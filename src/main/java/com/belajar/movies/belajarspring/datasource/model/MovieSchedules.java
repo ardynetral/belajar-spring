@@ -1,8 +1,9 @@
 package com.belajar.movies.belajarspring.datasource.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,15 +19,11 @@ public class MovieSchedules {
     @Column(name = "`id`")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "`movie_id`")
-    @JsonIgnore
-    private Movies movieId;
+    @Column(name = "`movie_id`")
+    private Long movieId;
 
-    @ManyToOne
-    @JoinColumn(name = "`studio_id`")
-    @JsonIgnore
-    private Studios studioId;
+    @Column(name = "`studio_id`")
+    private Long studioId;
 
     @Column(name = "`start_time`")
     private String startTime;
@@ -41,9 +38,11 @@ public class MovieSchedules {
     private Date date;
 
     @Column(name = "`created_at`")
+    @CreationTimestamp
     private Date createdAt;
 
     @Column(name = "`updated_at`")
+    @UpdateTimestamp
     private Date updatedAt;
 
     @Column(name = "`deleted_at`")
