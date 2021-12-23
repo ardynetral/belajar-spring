@@ -7,6 +7,7 @@ import java.util.Date;
 public class DateUtil {
 
     public static final String FORMAT_DEFAULT = "yyyy-MM-dd HH:mm";
+    public static final String FORMAT_DATEONE = "yyyyMMddHHmmss";
 
     public static Date convertStringToDate(String str){
         Date date = null;
@@ -17,5 +18,10 @@ public class DateUtil {
             es.printStackTrace();
         }
         return date;
+    }
+
+    public static String dateFormat(String pattern) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(new Date());
     }
 }
