@@ -3,6 +3,7 @@ package com.belajar.movies.belajarspring.service.Impl;
 import com.belajar.movies.belajarspring.datasource.AppUserRole;
 import com.belajar.movies.belajarspring.datasource.model.Users;
 import com.belajar.movies.belajarspring.datasource.repository.UsersRepository;
+import com.belajar.movies.belajarspring.global.UploadDataType;
 import com.belajar.movies.belajarspring.views.request.LoginDto;
 import com.belajar.movies.belajarspring.views.request.RegisterDto;
 import com.belajar.movies.belajarspring.security.JwtTokenProvider;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -41,6 +43,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Users signup(RegisterDto registerDto) throws IOException {
         Path file = uploadFile.upload(registerDto.getAvatar(), uploadPath);
+        var uploadType = UploadDataType.valueOf("IMAGE");
+        switch (uploadType) {
+            case IMAGE:
+                var extension = FilenameUtils.getExtension(registerDto.getAvatar().getOriginalFilename());
+                uploadFile.compressImage(file, extension, 30, uploadPath);
+            case CSV:
+            case DOC:
+            case DOCX:
+            case PDF:
+        }
+
         var neUser = new Users();
         neUser.setUsername(registerDto.getName());
         neUser.setPassword(passwordEncoder.encode(registerDto.getPassword()));
