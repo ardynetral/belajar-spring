@@ -20,7 +20,7 @@ public class BackofficeController {
     BackofficeService backofficeService;
     private ResponseSuccess responseSuccess = new ResponseSuccess();
 
-    @PostMapping(Routes.MOVIES)
+    @PostMapping(Routes.MOVIES + Routes.SCHEDULE)
     public ResponseEntity<Response> create(HttpServletRequest request, @RequestBody ScheduleDto scheduleDto){
 
         var data = backofficeService.create(scheduleDto, request);

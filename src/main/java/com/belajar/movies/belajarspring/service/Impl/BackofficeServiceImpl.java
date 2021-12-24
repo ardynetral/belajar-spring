@@ -27,7 +27,6 @@ public class BackofficeServiceImpl implements BackofficeService {
     @Override
     public MovieSchedules create(ScheduleDto  scheduleDto, HttpServletRequest req){
         usersRepository.findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
-        System.out.println("masok sini ");
         var schedule = new MovieSchedules();
         schedule.setMovieId(scheduleDto.getMovieId());
         schedule.setStudioId(scheduleDto.getStudioId());

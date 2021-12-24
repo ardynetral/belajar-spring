@@ -20,15 +20,11 @@ public class MovieTags {
     @Column(name = "`id`")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "`movie_id`")
-    @JsonIgnore
-    private Movies movieId;
+    @Column(name = "`movie_id`")
+    private Long movieId;
 
-    @ManyToOne
-    @JoinColumn(name = "`tag_id`")
-    @JsonIgnore
-    private Tags tagId;
+    @Column(name = "`tag_id`")
+    private Integer tagId;
 
     @Column(name = "`created_at`")
     @CreationTimestamp

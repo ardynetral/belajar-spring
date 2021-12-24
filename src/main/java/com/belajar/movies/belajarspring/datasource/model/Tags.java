@@ -2,6 +2,8 @@ package com.belajar.movies.belajarspring.datasource.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import javax.persistence.*;
@@ -20,9 +22,11 @@ public class Tags {
     private String name;
 
     @Column(name = "`created_at`")
+    @CreationTimestamp
     private Date createdAt;
 
     @Column(name = "`updated_at`")
+    @UpdateTimestamp
     private Date updatedAt;
 
     @Column(name = "`deleted_at`")
