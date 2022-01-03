@@ -10,4 +10,6 @@ public interface UserService {
 
     Users signup(RegisterDto registerDto) throws IOException;
     Users login(LoginDto loginDto);
+
+    Users detailUser(String username);
 }

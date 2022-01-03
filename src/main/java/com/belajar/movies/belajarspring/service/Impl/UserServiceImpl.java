@@ -28,9 +28,6 @@ public class UserServiceImpl implements UserService {
     UsersRepository userRepository;
 
     @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -69,9 +66,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Users login(LoginDto loginDto){
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
         Users user = userRepository.findByUsername(loginDto.getUsername());
         user.setToken(jwtTokenProvider.createToken(loginDto.getUsername(), new ArrayList<AppUserRole>(Arrays.asList(AppUserRole.ROLE_ADMIN))));
+        return user;
+    }
+
+    @Override
+    public Users detailUser(String username){
+        Users user = this.userRepository.findByUsername(username);
+        if(user == null){
+            return null;
+        }
         return user;
     }
 }

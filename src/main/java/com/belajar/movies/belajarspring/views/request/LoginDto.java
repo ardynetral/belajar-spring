@@ -1,5 +1,6 @@
 package com.belajar.movies.belajarspring.views.request;
 
+import com.belajar.movies.belajarspring.views.validation.LoginShouldBeExists;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 public class LoginDto {
 
     @NotNull
+    @LoginShouldBeExists
     private String username;
 
     @NotNull

@@ -2,6 +2,9 @@ package com.belajar.movies.belajarspring.controller;
 
 import com.belajar.movies.belajarspring.global.Global;
 import com.belajar.movies.belajarspring.global.Routes;
+import com.belajar.movies.belajarspring.service.ValidationService;
+import com.belajar.movies.belajarspring.util.ErrorCode;
+import com.belajar.movies.belajarspring.util.exception.ValidationException;
 import com.belajar.movies.belajarspring.views.request.LoginDto;
 import com.belajar.movies.belajarspring.views.request.RegisterDto;
 import com.belajar.movies.belajarspring.views.response.LoginResp;
@@ -14,9 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -28,6 +35,9 @@ public class AuthController {
     UserService userService;
     private ResponseSuccess responseSuccess = new ResponseSuccess();
 
+    @Autowired
+    private ValidationService validationService;
+
     @PostMapping(Routes.REGISTER)
     public ResponseEntity<Response> loginup(@ModelAttribute RegisterDto registerDto ) throws Exception {
 
@@ -38,10 +48,14 @@ public class AuthController {
     }
 
     @PostMapping(Routes.LOGIN)
-    public ResponseEntity<Response> login(HttpServletRequest request, @RequestBody LoginDto loginDto){
+    public ResponseEntity<Response> login(HttpServletRequest request, @Valid @RequestBody LoginDto loginDto, BindingResult bindingResult) throws ValidationException {
+        if (bindingResult.hasErrors()) {
+            Map<String, List<Map<String, String>>> errors = validationService.errorMessage(bindingResult);
+            throw new ValidationException(ErrorCode.ERROR.ERROR_VALIDATION.name(), errors);
+        }
         log.info("IP Address : "+ IpAddressGet.getClientIp(request));
         var data = userService.login(loginDto);
-        responseSuccess.setData(LoginResp.mappring(data));
+        responseSuccess.setData(LoginResp.mapping(data));
         responseSuccess.setMessage("Success Login");
         return ResponseEntity.ok(responseSuccess);
 

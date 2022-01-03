@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -42,7 +44,7 @@ public class JwtTokenProvider {
   }
 
   public String createToken(String username, List<AppUserRole> appUserRoles) {
-
+    log.info("Create Token in Token Provider");
     Claims claims = Jwts.claims().setSubject(username);
     claims.put("auth", appUserRoles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
 
@@ -75,6 +77,7 @@ public class JwtTokenProvider {
   }
 
   public boolean validateToken(String token) throws ValidationException {
+    log.info("Validate Token in Token Provider");
     try {
 //      System.out.println("token validasi "+token);
       Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);

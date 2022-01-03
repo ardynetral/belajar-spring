@@ -6,10 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import javax.transaction.Transactional;
 
 public interface UsersRepository extends JpaRepository<Users, Integer> {
-    boolean existsByUsername(String username);
-
     Users findByUsername(String username);
 
-    @Transactional
-    void deleteByUsername(String username);
 }

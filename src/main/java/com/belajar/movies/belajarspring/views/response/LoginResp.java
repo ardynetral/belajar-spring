@@ -11,7 +11,7 @@ public class LoginResp {
     private String avatar;
     private String token;
 
-    public static LoginResp mappring(Users users){
+    public static LoginResp mapping(Users users){
         var loginResp = new LoginResp();
         loginResp.setAvatar(users.getAvatar());
         loginResp.setEmail(users.getEmail());

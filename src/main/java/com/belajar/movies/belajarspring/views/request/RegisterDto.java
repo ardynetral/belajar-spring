@@ -3,6 +3,7 @@ package com.belajar.movies.belajarspring.views.request;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +17,7 @@ public class RegisterDto {
     private String password;
 
     @NotNull
+    @Email(message = "email not valid")
     private String email;
 
     private MultipartFile avatar;
